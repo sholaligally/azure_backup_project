@@ -73,7 +73,7 @@ terraform apply
 
 ## 🗂️ Configuration
 
-### Variables Example
+### Variables Examples
 
 ```hcl
 rsv_count           = 3
