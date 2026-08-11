@@ -15,6 +15,15 @@ variables:
   # - group: terraform-secrets   # only if you added secrets in Part 6.4
   - name: terraformVersion
     value: '1.8.0'
+  # Must match backend.tf exactly — centralized here so Plan and Apply can't drift from each other.
+  - name: tfStateResourceGroup
+    value: 'rg-tfstate'
+  - name: tfStateStorageAccount
+    value: 'sttfstatebackupezlinks1'
+  - name: tfStateContainer
+    value: 'tfstate'
+  - name: tfStateKey
+    value: 'azure-backup-project.tfstate'
 
 stages:
   - stage: Validate
@@ -44,10 +53,10 @@ stages:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'sc-azure-backup-prod'
-              backendAzureRmResourceGroupName: 'rg-tfstate'
-              backendAzureRmStorageAccountName: 'sttfstatebackup'
-              backendAzureRmContainerName: 'tfstate'
-              backendAzureRmKey: 'azure-backup-project.tfstate'
+              backendAzureRmResourceGroupName: $(tfStateResourceGroup)
+              backendAzureRmStorageAccountName: $(tfStateStorageAccount)
+              backendAzureRmContainerName: $(tfStateContainer)
+              backendAzureRmKey: $(tfStateKey)
           - task: TerraformTaskV4@4
             inputs:
               provider: 'azurerm'
@@ -79,10 +88,10 @@ stages:
                     provider: 'azurerm'
                     command: 'init'
                     backendServiceArm: 'sc-azure-backup-prod'
-                    backendAzureRmResourceGroupName: 'rg-tfstate'
-                    backendAzureRmStorageAccountName: 'sttfstatebackup'
-                    backendAzureRmContainerName: 'tfstate'
-                    backendAzureRmKey: 'azure-backup-project.tfstate'
+                    backendAzureRmResourceGroupName: $(tfStateResourceGroup)
+                    backendAzureRmStorageAccountName: $(tfStateStorageAccount)
+                    backendAzureRmContainerName: $(tfStateContainer)
+                    backendAzureRmKey: $(tfStateKey)
                 - task: TerraformTaskV4@4
                   inputs:
                     provider: 'azurerm'
